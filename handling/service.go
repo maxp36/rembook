@@ -7,10 +7,10 @@ import (
 	"github.com/maxp36/rembook/handling/generated/prisma"
 )
 
-// ErrInvalidArgument is returned if method's argument are invalid
+// ErrInvalidArgument is returned when one or more arguments are invalid.
 var ErrInvalidArgument = errors.New("invalid argument")
 
-// Service is th instance of the Handling service
+// Service is the interface that provides handling methods.
 type Service interface {
 	AddBook(ctx context.Context, name string, description string) (prisma.Book, error)
 	GetBook(ctx context.Context, id string) (prisma.Book, error)
@@ -24,6 +24,11 @@ type Service interface {
 }
 
 type service struct{}
+
+// NewService returns a new instance of a handling Service.
+func NewService() Service {
+	return &service{}
+}
 
 var client = prisma.New(nil)
 
@@ -152,9 +157,4 @@ func (s *service) Chapters(ctx context.Context, bookID string) ([]prisma.Chapter
 	}
 
 	return chapters, nil
-}
-
-// NewService returns the new instance of Handling service
-func NewService() Service {
-	return &service{}
 }

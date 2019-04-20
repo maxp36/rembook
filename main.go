@@ -25,6 +25,7 @@ func main() {
 
 	var hs handling.Service
 	hs = handling.NewService()
+	hs = handling.NewLoggingService(log.With(logger, "component", "handling"), hs)
 
 	httpLogger := log.With(logger, "component", "http")
 

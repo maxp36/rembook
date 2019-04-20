@@ -11,7 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// MakeHandler makes handlers for all service methods and sets routes.
+// MakeHandler returns a handler for the handling service.
 func MakeHandler(s Service, logger kitlog.Logger) http.Handler {
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorLogger(logger),
