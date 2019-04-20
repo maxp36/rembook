@@ -1,0 +1,17 @@
+type Book {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String! @unique
+  description: String!
+  chapters: [Chapter!]! @relation(name: "BookChapter", onDelete: CASCADE)
+}
+
+type Chapter {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  name: String!
+  description: String!
+  book: Book! @relation(name: "BookChapter")
+}

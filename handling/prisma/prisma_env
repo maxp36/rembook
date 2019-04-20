@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export PRISMA_MANAGEMENT_API_SECRET="mysecret"
+echo $PRISMA_MANAGEMENT_API_SECRET

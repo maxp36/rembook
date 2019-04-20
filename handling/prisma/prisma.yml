@@ -1,0 +1,8 @@
+endpoint: http://localhost:4466
+
+datamodel: models/datamodel.prisma
+generate:
+  - generator: go-client
+    output: ../generated/prisma/
+
+secret: my-secret-42
