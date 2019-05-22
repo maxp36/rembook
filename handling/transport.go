@@ -70,15 +70,18 @@ func MakeHandler(s Service, logger kitlog.Logger) http.Handler {
 
 	r := mux.NewRouter()
 
-	r.Handle("/handling/v1/books", addBookHandler).Methods("POST")
-	r.Handle("/handling/v1/books", listBooksHandler).Methods("GET")
-	r.Handle("/handling/v1/books/{id}", getBookHandler).Methods("GET")
-	r.Handle("/handling/v1/books/{id}", deleteBookHandler).Methods("DELETE")
+	v1 := r.PathPrefix("/handling/v1").Subrouter()
+	{
+		v1.Handle("/books", addBookHandler).Methods("POST")
+		v1.Handle("/books", listBooksHandler).Methods("GET")
+		v1.Handle("/books/{id}", getBookHandler).Methods("GET")
+		v1.Handle("/books/{id}", deleteBookHandler).Methods("DELETE")
 
-	r.Handle("/handling/v1/books/{book_id}/chapters", addChapterHandler).Methods("POST")
-	r.Handle("/handling/v1/books/{book_id}/chapters", listChaptersHandler).Methods("GET")
-	r.Handle("/handling/v1/books/{book_id}/chapters/{id}", getChapterHandler).Methods("GET")
-	r.Handle("/handling/v1/books/{book_id}/chapters/{id}", deleteChapterHandler).Methods("DELETE")
+		v1.Handle("/books/{book_id}/chapters", addChapterHandler).Methods("POST")
+		v1.Handle("/books/{book_id}/chapters", listChaptersHandler).Methods("GET")
+		v1.Handle("/books/{book_id}/chapters/{id}", getChapterHandler).Methods("GET")
+		v1.Handle("/books/{book_id}/chapters/{id}", deleteChapterHandler).Methods("DELETE")
+	}
 
 	return r
 }

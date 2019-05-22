@@ -12,6 +12,9 @@ import (
 	stdprometheus "github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
+	"github.com/uber/jaeger-client-go"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
+
 	"github.com/go-kit/kit/log"
 	"github.com/maxp36/rembook/handling"
 )
@@ -26,6 +29,25 @@ func main() {
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+
+	// Sample configuration for testing. Use constant sampling to sample every trace
+	// and enable LogSpan to log every span via configured Logger.
+	jcfg := jaegercfg.Configuration{
+		Sampler: &jaegercfg.SamplerConfig{
+			Type:  jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &jaegercfg.ReporterConfig{
+			LogSpans: true,
+		},
+	}
+
+	// Initialize tracer with a logger and a metrics factory
+	tracer, closer, err := jcfg.New("handling")
+	if err != nil {
+		logger.Log("err", fmt.Sprintf("Could not initialize jaeger tracer: %s", err.Error()))
+	}
+	defer closer.Close()
 
 	labelNames := []string{"method"}
 
@@ -47,6 +69,7 @@ func main() {
 		}, labelNames),
 		hs,
 	)
+	hs = handling.NewTracingService(tracer, hs)
 
 	httpLogger := log.With(logger, "component", "http")
 
